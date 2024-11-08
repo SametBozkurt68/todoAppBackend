@@ -40,6 +40,7 @@ sequelize.authenticate()
     })
     .then(() => console.log('Tablolar senkronize edildi.'))
     .catch(err => console.error('Veritabanı bağlantısı başarısız:', err));
+    
 
 app.get('/todo-find-all', async (_req, res) => {
     try {
@@ -54,7 +55,7 @@ app.get('/todo-find-all', async (_req, res) => {
 app.post('/todo-add', async (req, res) => {
     const { todo_adi, date } = req.body;
 
-    // Girdi doğrulama
+
     if (!todo_adi || !date) {
         return res.status(400).json({ error: 'Todo adı ve tarih gereklidir' });
     }
@@ -70,8 +71,6 @@ app.post('/todo-add', async (req, res) => {
 
 app.post('/todo-update', async (req, res) => {
     const { todo_id, todo_adi, date } = req.body;
-
-    // Girdi doğrulama
     if (!todo_id || !todo_adi || !date) {
         return res.status(400).json({ error: 'Todo ID, adı ve tarih gereklidir' });
     }
@@ -96,7 +95,6 @@ app.post('/todo-update', async (req, res) => {
 app.post('/todo-delete', async (req, res) => {
     const id = req.body.todo_id;
 
-    // Silme işlemi doğrulama
     if (!id) {
         return res.status(400).json({ error: 'Todo ID gereklidir' });
     }
