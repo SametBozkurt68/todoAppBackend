@@ -30,13 +30,14 @@ const Task = sequelize.define('todo', {
     durum: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue:0,
+        defaultValue: 0,
     }
 }, 
 {   
     freezeTableName: true,
     timestamps: false 
 });
+
 sequelize.authenticate()
     .then(() => {
         console.log('Veritabanı bağlantısı başarılı.');
@@ -45,10 +46,12 @@ sequelize.authenticate()
     .then(() => console.log('Tablolar senkronize edildi.'))
     .catch(err => console.error('Veritabanı bağlantısı başarısız:', err));
 
+// Görevleri Yeniden Eskiye Doğru Sıralayarak Getir
 app.get('/todo-find-all', async (_req, res) => {
     try {
-        const tasks = await Task.findAll();
-
+        const tasks = await Task.findAll({
+            order: [['date', 'DESC']] // Tarihleri yeniden eskiye doğru sıralar
+        });
         res.json(tasks);
     } catch (error) {
         console.error('Görevler alınamadı:', error);
@@ -116,20 +119,20 @@ app.post('/todo-delete', async (req, res) => {
     }
 });
 
-
-
-app.get('/durum', async (_req, res) => {
+async function updateColumn(id, yeniDeger) {
     try {
-        const durum = await durum.findAll(); 
-        res.json(durum);
+        const todo = await Task.findByPk(id);
+        if (todo) {
+            todo.durum = yeniDeger; 
+            await todo.save();
+            console.log('Güncelleme başarılı');
+        } else {
+            console.log('Kayıt bulunamadı');
+        }
     } catch (error) {
-        console.error('Kategoriler alınamadı:', error);
-        res.status(500).send('Sunucu hatası');
+        console.error('Hata:', error);
     }
-});
-
-  
-
+}
 
 const port = 3100;
 app.listen(port, () => {
