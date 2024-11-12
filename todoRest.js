@@ -31,6 +31,11 @@ const Task = sequelize.define('todo', {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue:0,
+    },
+    aciklama:{
+        type: DataTypes.STRING,
+        allowNull:true,
+        defaultValue:null
     }
 }, 
 {   
@@ -45,7 +50,10 @@ sequelize.authenticate()
     .then(() => console.log('Tablolar senkronize edildi.'))
     .catch(err => console.error('Veritabanı bağlantısı başarısız:', err));
 
+
+
 app.get('/todo-find-all', async (_req, res) => {
+   
     try {
         const tasks = await Task.findAll();
 
@@ -73,15 +81,18 @@ app.post('/todo-add', async (req, res) => {
 });
 
 app.post('/todo-update', async (req, res) => {
-    const { todo_id, todo_adi, date, durum } = req.body;
+    const { todo_id, todo_adi, date, durum,aciklama } = req.body;
+
+
     if (!todo_id || !todo_adi || !date || !durum) {
         return res.status(400).json({ error: 'Todo ID, adı, tarih ve durum gereklidir' });
     }
 
+
     try {
         const status = await Task.update(
-            { todo_adi, date, durum },
-            { where: { todo_id } }
+            { todo_adi, date, durum, aciklama },
+            { where: { todo_id } }  
         );
         
         if (status[0] === 0) {
