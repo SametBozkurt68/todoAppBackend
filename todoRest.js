@@ -23,10 +23,22 @@ const Task = sequelize.define('todo', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    date: {
+    is_verilis: {
         type: DataTypes.DATE,
         allowNull: true
-    },  
+    },          
+    is_bitirme:{
+        type:DataTypes.DATE,
+        allowNull: true
+    },
+    ise_baslama:{
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    isi_bitirme:{
+        type: DataTypes.DATE,
+        allowNull: true
+    },
     durum: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -65,14 +77,14 @@ app.get('/todo-find-all', async (_req, res) => {
 });
 
 app.post('/todo-add', async (req, res) => {
-    const { todo_adi, date, durum } = req.body;
+    const { todo_adi, is_verilis, durum,is_bitirme} = req.body;
 
-    if (!todo_adi || !date || !durum) {
+    if (!todo_adi || !is_verilis || !durum  || !is_bitirme ) {
         return res.status(400).json({ error: 'Todo adı, tarih ve durum gereklidir' });
     }
 
     try {
-        const data = await Task.create({ todo_adi, date, durum });
+        const data = await Task.create({ todo_adi, is_verilis, durum,is_bitirme});
         res.json({ data });
     } catch (error) {
         console.error('Görev eklenemedi:', error);
@@ -81,17 +93,17 @@ app.post('/todo-add', async (req, res) => {
 });
 
 app.post('/todo-update', async (req, res) => {
-    const { todo_id, todo_adi, date, durum,aciklama } = req.body;
+    const { todo_id, todo_adi, is_verilis, durum,aciklama,is_bitirme, ise_baslama,isi_bitirme} = req.body;
 
 
-    if (!todo_id || !todo_adi || !date || !durum) {
+    if (!todo_id || !todo_adi || !is_verilis || !durum  || !is_bitirme  )  {
         return res.status(400).json({ error: 'Todo ID, adı, tarih ve durum gereklidir' });
     }
 
 
     try {
         const status = await Task.update(
-            { todo_adi, date, durum, aciklama },
+            { todo_adi, is_verilis, durum, aciklama,is_bitirme,ise_baslama,isi_bitirme },
             { where: { todo_id } }  
         );
         
